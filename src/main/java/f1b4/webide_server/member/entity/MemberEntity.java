@@ -28,6 +28,8 @@ public class MemberEntity {
         memberEntity.setMemberEmail(memberDTO.getMemberEmail());
         memberEntity.setMemberPassword(memberDTO.getMemberPassword());
         memberEntity.setMemberName(memberDTO.getMemberName());
+        memberEntity.setGender(memberDTO.getGender());
+        memberEntity.setPhoneNumber(memberDTO.getPhoneNumber());
         return memberEntity;
     }
 
