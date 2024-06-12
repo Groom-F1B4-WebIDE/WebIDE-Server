@@ -3,6 +3,7 @@ package f1b4.webide_server.service;
 import f1b4.webide_server.domain.FileEntity;
 import f1b4.webide_server.repository.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,20 +35,32 @@ public class FileService {
     }
 
     public FileEntity updateFile(String fileName, String newcontent) {
-        Optional<FileEntity> file = fileRepository.findByFileName(fileName);
-        if (file.isPresent()) {
-            FileEntity updatefile = file.get();
-            updatefile.setContent(newcontent);
-            return fileRepository.save(updatefile);
-        } else {
-            // 파일이 존재하지 않을 때의 처리
-            throw new RuntimeException("File not found with name: " + fileName);
+        try {
+            Optional<FileEntity> file = fileRepository.findByFileName(fileName);
+            if (file.isPresent()) {
+                FileEntity updatefile = file.get();
+                updatefile.setContent(newcontent);
+                fileRepository.save(updatefile);
+                return updatefile;
+            } else {
+                // 파일이 존재하지 않을 때의 처리
+                throw new RuntimeException("File not found with name: " + fileName);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error updating file: " + e.getMessage());
+
         }
-
     }
 
-    public void deleteFile(Long id) {
-        fileRepository.deleteById(id);
+    public boolean deleteFile(Long id) {
+        try {
+            fileRepository.deleteById(id);
+            return true; // 삭제 성공
+        } catch (EmptyResultDataAccessException e) {
+            // 파일이 존재하지 않는 경우 처리
+            return false; // 삭제 실패
+        }
     }
+
 
 }
