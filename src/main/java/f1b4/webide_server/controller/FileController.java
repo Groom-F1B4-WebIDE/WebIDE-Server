@@ -1,6 +1,6 @@
 package f1b4.webide_server.controller;
 
-import f1b4.webide_server.domain.FileEntity;
+import f1b4.webide_server.entity.FileEntity;
 import f1b4.webide_server.dto.CreateFileReq;
 import f1b4.webide_server.dto.DeleteFileReq;
 import f1b4.webide_server.dto.UpdateFileReq;
@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -42,10 +41,11 @@ public class FileController {
     }
 
     /**
-     * 1. 파일 읽기 및 불러오기
+     * 2. 파일 읽기 및 불러오기
      * Get Mapping
-     * req : memberID, filename, fileType
-     * resp : status OK, new file 객체
+     * req : filename, fileType (current)
+     * resp : status OK, content return
+     * file list 불러올때 memberID req값으로 넣어줘야함
      * */
     @GetMapping("/read")
     public ResponseEntity<String> readFile(@RequestBody UpdateFileReq updateFileReq) {
@@ -75,10 +75,6 @@ public class FileController {
     @GetMapping("/readlists")
     public ResponseEntity<List<FileEntity>> readFileList() {
         List<FileEntity> filelist = fileService.readFileList();
-        if (filelist.size() == 0) {
-            //filelist가 없으면 204 error 코드 전송
-            return ResponseEntity.noContent().build();
-        }
         return ResponseEntity.ok(filelist);
     }
 

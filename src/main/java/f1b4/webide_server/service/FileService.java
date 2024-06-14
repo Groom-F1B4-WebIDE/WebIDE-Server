@@ -1,6 +1,6 @@
 package f1b4.webide_server.service;
 
-import f1b4.webide_server.domain.FileEntity;
+import f1b4.webide_server.entity.FileEntity;
 import f1b4.webide_server.repository.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;

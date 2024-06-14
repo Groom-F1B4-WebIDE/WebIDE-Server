@@ -1,10 +1,8 @@
 package f1b4.webide_server.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class CreateFileReq {
     private String fileName;
     private String fileType;

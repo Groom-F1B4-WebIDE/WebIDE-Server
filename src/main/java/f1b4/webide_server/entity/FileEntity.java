@@ -1,4 +1,4 @@
-package f1b4.webide_server.domain;
+package f1b4.webide_server.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
