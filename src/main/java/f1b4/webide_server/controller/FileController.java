@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -73,9 +74,15 @@ public class FileController {
      * file list 불러올때 memberID req값으로 넣어줘야함
      * */
     @GetMapping("/readlists")
-    public ResponseEntity<List<FileEntity>> readFileList() {
+    public ResponseEntity<Map<String, String>> readFileList() {
         List<FileEntity> filelist = fileService.readFileList();
-        return ResponseEntity.ok(filelist);
+        Map<String, String> resFileList = new HashMap<>();
+        for (FileEntity file : filelist) {
+            String name = file.getFileName();
+            String type = file.getFileType();
+            resFileList.put(name, type);
+        }
+        return ResponseEntity.ok(resFileList);
     }
 
     /**
@@ -96,19 +103,25 @@ public class FileController {
      * 4. 파일 삭제
      * Delete Mapping
      * req : fileId(current)
-     * resp : status OK, 성공 메세지 출력 / status 404
+     * resp : status OK, 삭제된 후 파일 리스트목록 return / status 404
      * memberID req에 나중에 추가해줘야함
      * */
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteFile(@RequestBody DeleteFileReq deleteFileReq) {
+    public ResponseEntity<Map<String, String>> deleteFile(@RequestBody DeleteFileReq deleteFileReq) {
         boolean isDeleted = fileService.deleteFile(deleteFileReq.getId());
-        if (isDeleted == true) {
+        if (isDeleted) {
             //삭제 성공
-            return ResponseEntity.ok("File deleted successfully.");
+            List<FileEntity> currentfilelist = fileService.readFileList();
+            Map<String, String> rescurrentfilelist = new HashMap<>();
+            for (FileEntity file : currentfilelist) {
+                String name = file.getFileName();
+                String type = file.getFileType();
+                rescurrentfilelist.put(name, type);
+            }
+            return ResponseEntity.ok(rescurrentfilelist);
         } else {
             //파일 없는데 시도한 경우, file notFound 404 Error 발생
             return ResponseEntity.notFound().build();
         }
     }
-
 }
