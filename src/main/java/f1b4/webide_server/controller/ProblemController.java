@@ -27,6 +27,11 @@ import java.util.Map;
 public class ProblemController {
     private final ProblemService problemService;
 
+    @GetMapping
+    public List<Problem> getProblems() {
+        return problemService.getProblems();
+    }
+
     @GetMapping("/{id}")
     public Problem getProblem(@PathVariable Long id) {
         return problemService.getProblemById(id);
