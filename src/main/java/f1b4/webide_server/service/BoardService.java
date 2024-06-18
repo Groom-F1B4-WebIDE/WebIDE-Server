@@ -2,6 +2,8 @@ package f1b4.webide_server.service;
 
 import f1b4.webide_server.dto.BoardDTO;
 import f1b4.webide_server.entity.BoardEntity;
+import f1b4.webide_server.entity.BoardFileEntity;
+import f1b4.webide_server.repository.BoardFileRepository;
 import f1b4.webide_server.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -10,7 +12,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -20,12 +25,33 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BoardService {
     private final BoardRepository boardRepository;
+    private final BoardFileRepository boardFileRepository;
 
-    public void save(BoardDTO boardDTO) {
-        BoardEntity boardEntity = BoardEntity.toSaveEntity(boardDTO);
-        boardRepository.save(boardEntity);
+    public void save(BoardDTO boardDTO) throws IOException {
+        // 파일 첨부 여부에 따라 로직 분리
+        if(boardDTO.getBoardFile().isEmpty()) {
+            // 첨부 파일 x
+            BoardEntity boardEntity = BoardEntity.toSaveEntity(boardDTO);
+            boardRepository.save(boardEntity);
+        }
+        else {
+            // 첨부 파일 ㅇ
+            MultipartFile boardFile = boardDTO.getBoardFile();
+            String originalFilename = boardFile.getOriginalFilename();
+            String storedFileName = System.currentTimeMillis() + "_" + originalFilename;
+            String savePath = "C:/springboot_img/" + storedFileName;
+            boardFile.transferTo(new File(savePath));
+            BoardEntity boardEntity = BoardEntity.toSaveFileEntity(boardDTO);
+            Long savedId = boardRepository.save(boardEntity).getId();
+            BoardEntity board = boardRepository.findById(savedId).get();
+
+            BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity(board, originalFilename, storedFileName);
+            boardFileRepository.save(boardFileEntity);
+
+        }
     }
 
+    @Transactional
     public List<BoardDTO> findAll() {
         List<BoardEntity> boardEntityList = boardRepository.findAll();
         List<BoardDTO> boardDTOList = new ArrayList<>();
@@ -40,7 +66,7 @@ public class BoardService {
         boardRepository.updateHits(id);
     }
 
-
+    @Transactional
     public BoardDTO findById(Long id) {
         Optional<BoardEntity> optionalBoardEntity = boardRepository.findById(id);
         if(optionalBoardEntity.isPresent()) {
@@ -53,6 +79,7 @@ public class BoardService {
 
     }
 
+    @Transactional
     public BoardDTO update(BoardDTO boardDTO) {
         BoardEntity boardEntity = BoardEntity.toUpdateEntity(boardDTO);
         boardRepository.save(boardEntity);
