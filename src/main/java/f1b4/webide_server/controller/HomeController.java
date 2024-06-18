@@ -1,2 +1,12 @@
-package f1b4.webide_server.controller;public class HomeController {
+package f1b4.webide_server.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class HomeController {
+    @GetMapping("/")
+    public String index() {
+        return "index";
+    }
 }
