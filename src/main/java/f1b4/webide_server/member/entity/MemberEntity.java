@@ -6,7 +6,7 @@ import lombok.Setter;
 @Entity
 @Setter
 @Getter
-@Table(name = "member_table")
+@Table(name = "memberDDB")
 public class MemberEntity {
     @Id // pk 지정
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto_increment
