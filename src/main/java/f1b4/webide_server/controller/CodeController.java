@@ -1,5 +1,7 @@
-package f1b4.webide_server.compile;
+package f1b4.webide_server.controller;
 
+import f1b4.webide_server.domain.code.CodeRequest;
+import f1b4.webide_server.domain.code.JavaCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,12 +13,13 @@ import java.nio.file.Paths;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/code")
+@RequestMapping("/code")
 @CrossOrigin(origins = "*")
 public class CodeController {
 
     private Process runProcess;
     private BufferedReader processOutput;
+    private BufferedReader processError;
     private BufferedWriter processInput;
 
     @PostMapping("/compile")
@@ -25,30 +28,36 @@ public class CodeController {
 
         String language = codeRequest.getLanguage().toLowerCase();
         String code = codeRequest.getCode();
-//        String code = JavaCodeUtil.changeClassNameToSolution(codeRequest.getCode());
-
-        log.info("변경된 자바 {}", code);
 
         try {
             switch (language) {
                 case "java":
+                    code = JavaCodeUtil.changeClassNameToUserCode(codeRequest.getCode());
+                    log.info("변경된 자바 {}", code);
                     return compileJavaCode(code);
                 case "python":
                     return compilePythonCode(code);
                 case "cpp":
                     return compileCppCode(code);
                 default:
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("test");
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("지원되지 않는 언어입니다.");
             }
-        } catch (Exception e) {
+        }
+
+//        catch (IOException e) {
+//            log.error("api /compile 입력관련", e);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("api /compile 입력 관련 오류 발생");
+//        }
+
+        catch (Exception e) {
             log.error("api /compile", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("api /compile execution error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("api /compile 실행 중 오류 발생");
         }
     }
 
     @PostMapping("/execute")
     public ResponseEntity<String> executeCode(@RequestBody CodeRequest codeRequest) {
-        log.info("api /execute 요총: {}", codeRequest.getInputValues());
+        log.info("api /execute 요청: {}", codeRequest.getInputValues());
 
         String inputValues = codeRequest.getInputValues();
 
@@ -59,16 +68,26 @@ public class CodeController {
 
                 StringBuilder output = new StringBuilder();
                 String line;
-                while ((line = processOutput.readLine()) != null) {
-                    output.append(line).append("\n");
+                long startTime = System.currentTimeMillis();
+                while ((line = processOutput.readLine()) != null || processError.ready()) {
+                    if (line != null) {
+                        output.append(line).append("\n");
+                    }
+                    if (processError.ready()) {
+                        output.append("ERROR: ").append(processError.readLine()).append("\n");
+                    }
+                    if (System.currentTimeMillis() - startTime > 5000) { // 5초 제한
+                        runProcess.destroy();
+                        return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body("실행 시간 초과");
+                    }
                 }
                 return ResponseEntity.ok(output.toString());
             } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("run 과정 x");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("코드가 실행 준비되지 않았습니다.");
             }
         } catch (Exception e) {
             log.error("api /execute", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("api /execute execution error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("api /execute 실행 중 오류 발생");
         }
     }
 
@@ -86,6 +105,7 @@ public class CodeController {
 
         runProcess = new ProcessBuilder("java", "UserCode").start();
         processOutput = new BufferedReader(new InputStreamReader(runProcess.getInputStream()));
+        processError = new BufferedReader(new InputStreamReader(runProcess.getErrorStream()));
         processInput = new BufferedWriter(new OutputStreamWriter(runProcess.getOutputStream()));
         return ResponseEntity.ok("Java 코드 준비 완료");
     }
@@ -95,6 +115,7 @@ public class CodeController {
 
         runProcess = new ProcessBuilder("python3", "UserCode.py").start();
         processOutput = new BufferedReader(new InputStreamReader(runProcess.getInputStream()));
+        processError = new BufferedReader(new InputStreamReader(runProcess.getErrorStream()));
         processInput = new BufferedWriter(new OutputStreamWriter(runProcess.getOutputStream()));
         return ResponseEntity.ok("Python 코드 준비 완료");
     }
@@ -113,6 +134,7 @@ public class CodeController {
 
         runProcess = new ProcessBuilder("./UserCode").start();
         processOutput = new BufferedReader(new InputStreamReader(runProcess.getInputStream()));
+        processError = new BufferedReader(new InputStreamReader(runProcess.getErrorStream()));
         processInput = new BufferedWriter(new OutputStreamWriter(runProcess.getOutputStream()));
         return ResponseEntity.ok("C++ 코드 준비 완료");
     }

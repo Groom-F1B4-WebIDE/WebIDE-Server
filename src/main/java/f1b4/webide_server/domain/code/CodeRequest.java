@@ -1,8 +1,9 @@
-package f1b4.webide_server.compile;
+package f1b4.webide_server.domain.code;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter @Setter
 public class CodeRequest {
     private String code;
     private String language;
