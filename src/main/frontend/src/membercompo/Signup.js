@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
+import './styles/Signup.css';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -38,84 +39,86 @@ const Signup = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>회원가입</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <div>
-        <label>이메일:</label>
-        <input 
-          type="email" 
-          name="memberEmail" 
-          value={formData.memberEmail} 
-          onChange={handleChange} 
-          required
-        />
-      </div>
-      <div>
-        <label>비밀번호:</label>
-        <input 
-          type="password" 
-          name="memberPassword" 
-          value={formData.memberPassword} 
-          onChange={handleChange} 
-          required 
-          minLength="8" 
-          maxLength="20" 
-          pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
-          title="비밀번호는 8자 이상, 하나 이상의 대문자, 소문자, 숫자를 포함해야 합니다." 
-        />
-      </div>
-      <div>
-        <label>이름:</label>
-        <input 
-          type="text" 
-          name="memberName" 
-          value={formData.memberName} 
-          onChange={handleChange} 
-          required 
-          minLength="2" 
-          maxLength="50" 
-        />
-      </div>
-      <div>
-        <label>전화번호:</label>
-        <input 
-          type="tel" 
-          name="phoneNumber" 
-          value={formData.phoneNumber} 
-          onChange={handleChange} 
-          required 
-          pattern="[0-9]{3}-[0-9]{3,4}-[0-9]{4}" 
-          title="전화번호는 000-0000-0000 형식이어야 합니다." 
-        />
-      </div>
-      <div>
-        <label>성별:</label>
-        <label>
+    <div className="signup-container">
+      <form onSubmit={handleSubmit} className="signup-form">
+        <h2>회원가입</h2>
+        {error && <p className="error-message">{error}</p>}
+        <div className="form-group">
+          <label>이메일:</label>
           <input 
-            type="radio" 
-            name="gender" 
-            value="male" 
-            checked={formData.gender === 'male'} 
+            type="email" 
+            name="memberEmail" 
+            value={formData.memberEmail} 
+            onChange={handleChange} 
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>비밀번호:</label>
+          <input 
+            type="password" 
+            name="memberPassword" 
+            value={formData.memberPassword} 
             onChange={handleChange} 
             required 
+            minLength="8" 
+            maxLength="20" 
+            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
+            title="비밀번호는 8자 이상, 하나 이상의 대문자, 소문자, 숫자를 포함해야 합니다." 
           />
-          남성
-        </label>
-        <label>
+        </div>
+        <div className="form-group">
+          <label>이름:</label>
           <input 
-            type="radio" 
-            name="gender" 
-            value="female" 
-            checked={formData.gender === 'female'} 
+            type="text" 
+            name="memberName" 
+            value={formData.memberName} 
             onChange={handleChange} 
             required 
+            minLength="2" 
+            maxLength="50" 
           />
-          여성
-        </label>
-      </div>
-      <button type="submit">회원가입</button>
-    </form>
+        </div>
+        <div className="form-group">
+          <label>전화번호:</label>
+          <input 
+            type="tel" 
+            name="phoneNumber" 
+            value={formData.phoneNumber} 
+            onChange={handleChange} 
+            required 
+            pattern="[0-9]{3}-[0-9]{3,4}-[0-9]{4}" 
+            title="전화번호는 000-0000-0000 형식이어야 합니다." 
+          />
+        </div>
+        <div className="form-group">
+          <label>성별:</label>
+          <label>
+            <input 
+              type="radio" 
+              name="gender" 
+              value="male" 
+              checked={formData.gender === 'male'} 
+              onChange={handleChange} 
+              required 
+            />
+            남성
+          </label>
+          <label>
+            <input 
+              type="radio" 
+              name="gender" 
+              value="female" 
+              checked={formData.gender === 'female'} 
+              onChange={handleChange} 
+              required 
+            />
+            여성
+          </label>
+        </div>
+        <button type="submit" className="signup-button">회원가입</button>
+      </form>
+    </div>
   );
 };
 

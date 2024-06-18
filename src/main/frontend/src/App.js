@@ -1,28 +1,18 @@
-
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
+import Home from './membercompo/Home';
 import Signup from './membercompo/Signup';
 import Login from './membercompo/Login';
-import { Route, Routes, Link } from 'react-router-dom';
-
-import React, { useState } from 'react';
-
-const Home = () => {
-  return (
-    <div>
-      <h1>회원관리 시스템</h1>
-      <Link to="/login"><button>로그인</button></Link>
-      <Link to="/signup"><button>회원가입</button></Link>
-    </div>
-  );
-};
+import Main from './membercompo/main';
 
 const App = () => {
   return (
-
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-      </Routes>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/main" element={<Main />} />
+    </Routes>
   );
 };
 
