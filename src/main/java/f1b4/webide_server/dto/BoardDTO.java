@@ -1,10 +1,13 @@
 package f1b4.webide_server.dto;
 
 import f1b4.webide_server.entity.BoardEntity;
+import f1b4.webide_server.entity.BoardFileEntity;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -46,7 +49,7 @@ public class BoardDTO {
         boardDTO.setBoardTitle(boardEntity.getBoardTitle());
         boardDTO.setBoardContents(boardEntity.getBoardContents());
         boardDTO.setBoardHits(boardEntity.getBoardHits());
-        boardDTO.setBoardCreatedTime(boardEntity.getCreateTime());
+        boardDTO.setBoardCreatedTime(boardEntity.getCreatedTime());
         boardDTO.setBoardUpdatedTime(boardEntity.getUpdateTime());
 
         if(boardEntity.getFileAttached() == 0) {
