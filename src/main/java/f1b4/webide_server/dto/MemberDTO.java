@@ -1,5 +1,5 @@
-package f1b4.webide_server.member.dto;
-import f1b4.webide_server.member.entity.MemberEntity;
+package f1b4.webide_server.dto;
+import f1b4.webide_server.entity.MemberEntity;
 import lombok.*;
 
 @Getter

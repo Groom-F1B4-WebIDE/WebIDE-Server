@@ -1,6 +1,6 @@
-package f1b4.webide_server.member.repository;
+package f1b4.webide_server.repository;
 
-import f1b4.webide_server.member.entity.MemberEntity;
+import f1b4.webide_server.entity.MemberEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

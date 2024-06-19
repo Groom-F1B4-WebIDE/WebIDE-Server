@@ -1,5 +1,5 @@
-package f1b4.webide_server.member.entity;
-import f1b4.webide_server.member.dto.MemberDTO;
+package f1b4.webide_server.entity;
+import f1b4.webide_server.dto.MemberDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
