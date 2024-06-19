@@ -25,10 +25,13 @@ public class ProblemService {
 
     private final TestCaseRepository testCaseRepository;
 
+    public List<ProblemDTO> getProblems() {
+        List<Problem> problems = (List<Problem>) problemRepository.findAll();
+        return problems.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
     public Problem getProblemById(Long id) {
-        return problems.stream()
-                .filter(problem -> problem.getId().equals(id))
-                .findFirst()
+        return problemRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Problem not found"));
     }
 
@@ -56,27 +59,31 @@ public class ProblemService {
         return problem;
     }
 
-    @Transactional(readOnly = true)
     public ProblemDTO getProblem(Long id) {
-        Problem problem = problemRepository.findById(id).orElseThrow(() -> new RuntimeException("Problem not found"));
+        Problem problem = problemRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Problem not found"));
+        return convertToDTO(problem);
+    }
 
-        ProblemDTO problemResponseDTO = new ProblemDTO();
-//        problemResponseDTO.setId(problem.getId());
-        problemResponseDTO.setTitle(problem.getTitle());
-        problemResponseDTO.setDescription(problem.getDescription());
-        problemResponseDTO.setTimeLimit(problem.getTimeLimit());
-        problemResponseDTO.setMemoryLimit(problem.getMemoryLimit());
+    private ProblemDTO convertToDTO(Problem problem) {
+        ProblemDTO problemDTO = new ProblemDTO();
+        problemDTO.setId(problem.getId());
+        problemDTO.setTitle(problem.getTitle());
+        problemDTO.setDescription(problem.getDescription());
+        problemDTO.setTimeLimit(problem.getTimeLimit());
+        problemDTO.setMemoryLimit(problem.getMemoryLimit());
 
         List<TestCaseDTO> testCaseDTOs = problem.getTestCases().stream().map(testCase -> {
             TestCaseDTO testCaseDTO = new TestCaseDTO();
+            testCaseDTO.setId(testCase.getId());
             testCaseDTO.setInput(testCase.getInput());
             testCaseDTO.setExpectedOutput(testCase.getExpectedOutput());
             return testCaseDTO;
         }).collect(Collectors.toList());
 
-        problemResponseDTO.setTestCases(testCaseDTOs);
+        problemDTO.setTestCases(testCaseDTOs);
 
-        return problemResponseDTO;
+        return problemDTO;
     }
 
     /*

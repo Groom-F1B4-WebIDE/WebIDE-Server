@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter @Setter
 public class ProblemDTO {
-//    private Long id;
+    private Long id;
     private String title;
     private String description;
     private Long timeLimit;

@@ -1,10 +1,13 @@
 package f1b4.webide_server.controller;
 
 
+import f1b4.webide_server.dto.ProblemDTO;
 import f1b4.webide_server.entity.code.CodeRequest;
 import f1b4.webide_server.entity.code.JavaCodeUtil;
+import f1b4.webide_server.entity.problem.MissionResult;
 import f1b4.webide_server.entity.problem.Problem;
 import f1b4.webide_server.entity.problem.TestCase;
+import f1b4.webide_server.repository.MissionResultRepository;
 import f1b4.webide_server.service.ProblemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,14 +31,18 @@ import java.util.Map;
 public class ProblemController {
     private final ProblemService problemService;
 
+    private final MissionResultRepository resultRepository;
+
     @GetMapping
-    public List<Problem> getProblems() {
-        return problemService.getProblems();
+    public ResponseEntity<List<ProblemDTO>> getProblems() {
+        List<ProblemDTO> problems = problemService.getProblems();
+        return ResponseEntity.ok(problems);
     }
 
     @GetMapping("/{id}")
-    public Problem getProblem(@PathVariable Long id) {
-        return problemService.getProblemById(id);
+    public ResponseEntity<ProblemDTO> getProblem(@PathVariable Long id) {
+        ProblemDTO problemResponseDTO = problemService.getProblem(id);
+        return ResponseEntity.ok(problemResponseDTO);
     }
 
     @PostMapping("/{id}/submit")
@@ -59,8 +67,19 @@ public class ProblemController {
 
             List<Map<String, Object>> testCaseResults = runTestCases(problem.getTestCases(), language, timeLimitMillis, memoryLimitBytes);
 
+            boolean isCorrect = testCaseResults.stream().allMatch(result -> "correct".equals(result.get("status")));
             response.put("status", "done");
             response.put("results", testCaseResults);
+
+            // 제출 결과 저장
+            MissionResult missionResult = new MissionResult();
+            missionResult.setProblemId(id);
+//            missionResult.setUsername(codeRequest.get); // 사용자가 로그인할 경우 필요
+            missionResult.setCode(code);
+            missionResult.setCorrect(isCorrect);
+            missionResult.setResult(response.toString());
+            missionResult.setResultTimeAt(LocalDateTime.now());
+            resultRepository.save(missionResult);
             return ResponseEntity.ok(response);
 
         } catch (IOException e) {
@@ -70,6 +89,16 @@ public class ProblemController {
         } catch (Exception e) {
             return handleException(response, "실행 중 오류 발생", e);
         }
+    }
+
+    @GetMapping("/{id}/submissions")
+    public List<MissionResult> getSubmissionsByProblemId(@PathVariable Long id) {
+        return resultRepository.findByProblemId(id);
+    }
+
+    @GetMapping("/user/{memberEmail}/submissions")
+    public List<MissionResult> getSubmissionsByUsername(@PathVariable String memberEmail) {
+        return resultRepository.findByMemberEmail(memberEmail);
     }
 
     private ResponseEntity<String> compileCode(String code, String language) throws IOException, InterruptedException {
