@@ -1,7 +1,7 @@
 package f1b4.webide_server.controller;
 
-import f1b4.webide_server.domain.code.CodeRequest;
-import f1b4.webide_server.domain.code.JavaCodeUtil;
+import f1b4.webide_server.entity.code.CodeRequest;
+import f1b4.webide_server.entity.code.JavaCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

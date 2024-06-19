@@ -1,8 +1,8 @@
 package f1b4.webide_server.service;
 
 
-import f1b4.webide_server.domain.problem.Problem;
-import f1b4.webide_server.domain.problem.TestCase;
+import f1b4.webide_server.entity.problem.Problem;
+import f1b4.webide_server.entity.problem.TestCase;
 import f1b4.webide_server.dto.ProblemDTO;
 import f1b4.webide_server.dto.TestCaseDTO;
 import f1b4.webide_server.repository.ProblemRepository;

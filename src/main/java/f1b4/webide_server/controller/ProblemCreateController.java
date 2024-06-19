@@ -1,6 +1,6 @@
 package f1b4.webide_server.controller;
 
-import f1b4.webide_server.domain.problem.Problem;
+import f1b4.webide_server.entity.problem.Problem;
 import f1b4.webide_server.dto.ProblemDTO;
 import f1b4.webide_server.service.ProblemService;
 import lombok.RequiredArgsConstructor;

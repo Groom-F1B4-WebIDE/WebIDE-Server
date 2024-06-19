@@ -1,4 +1,4 @@
-package f1b4.webide_server.domain.code;
+package f1b4.webide_server.entity.code;
 
 import lombok.Getter;
 import lombok.Setter;

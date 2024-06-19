@@ -1,10 +1,10 @@
 package f1b4.webide_server.controller;
 
 
-import f1b4.webide_server.domain.code.CodeRequest;
-import f1b4.webide_server.domain.code.JavaCodeUtil;
-import f1b4.webide_server.domain.problem.Problem;
-import f1b4.webide_server.domain.problem.TestCase;
+import f1b4.webide_server.entity.code.CodeRequest;
+import f1b4.webide_server.entity.code.JavaCodeUtil;
+import f1b4.webide_server.entity.problem.Problem;
+import f1b4.webide_server.entity.problem.TestCase;
 import f1b4.webide_server.service.ProblemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

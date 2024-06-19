@@ -1,4 +1,4 @@
-package f1b4.webide_server.domain.problem;
+package f1b4.webide_server.entity.problem;
 
 import jakarta.persistence.*;
 import lombok.Getter;
