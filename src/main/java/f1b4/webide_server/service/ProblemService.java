@@ -61,7 +61,7 @@ public class ProblemService {
         Problem problem = problemRepository.findById(id).orElseThrow(() -> new RuntimeException("Problem not found"));
 
         ProblemDTO problemResponseDTO = new ProblemDTO();
-        problemResponseDTO.setId(problem.getId());
+//        problemResponseDTO.setId(problem.getId());
         problemResponseDTO.setTitle(problem.getTitle());
         problemResponseDTO.setDescription(problem.getDescription());
         problemResponseDTO.setTimeLimit(problem.getTimeLimit());
