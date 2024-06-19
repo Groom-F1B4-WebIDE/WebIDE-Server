@@ -1,4 +1,4 @@
-package f1b4.webide_server.Config;
+package f1b4.webide_server.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
