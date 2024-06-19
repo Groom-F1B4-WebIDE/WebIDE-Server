@@ -1,10 +1,14 @@
 package f1b4.webide_server.dto;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+
+@Getter
+@Setter
 public class DeleteFileReq {
 
-    private Long id;
+    private String fileName ;
     //private Member memberId;
 }

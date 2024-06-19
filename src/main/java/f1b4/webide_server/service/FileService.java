@@ -52,10 +52,19 @@ public class FileService {
         }
     }
 
-    public boolean deleteFile(Long id) {
+    public boolean deleteFile(String fileName) {
         try {
-            fileRepository.deleteById(id);
-            return true; // 삭제 성공
+            Optional<FileEntity> file = fileRepository.findByFileName(fileName);
+            if (file.isPresent()) {
+                FileEntity deletefile = file.get();
+                Long deleteFileID = deletefile.getFileID();
+                fileRepository.deleteById(deleteFileID);
+                return true; // 삭제 성공
+            } else {
+                // 파일이 존재하지 않을 때의 처리
+                throw new RuntimeException("File not found with name: " + fileName);
+            }
+
         } catch (EmptyResultDataAccessException e) {
             // 파일이 존재하지 않는 경우 처리
             return false; // 삭제 실패

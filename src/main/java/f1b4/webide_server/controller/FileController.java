@@ -96,19 +96,18 @@ public class FileController {
     public ResponseEntity<FileEntity> updateFile(@RequestBody UpdateFileReq updateFileReq){
         FileEntity updatedfile = fileService.updateFile(updateFileReq.getFileName(), updateFileReq.getContent());
         return ResponseEntity.ok(updatedfile);
-
     }
 
     /**
      * 4. 파일 삭제
      * Delete Mapping
-     * req : fileId(current)
+     * req : fileName(current)
      * resp : status OK, 삭제된 후 파일 리스트목록 return / status 404
      * memberID req에 나중에 추가해줘야함
      * */
     @DeleteMapping("/delete")
     public ResponseEntity<Map<String, String>> deleteFile(@RequestBody DeleteFileReq deleteFileReq) {
-        boolean isDeleted = fileService.deleteFile(deleteFileReq.getId());
+        boolean isDeleted = fileService.deleteFile(deleteFileReq.getFileName());
         if (isDeleted) {
             //삭제 성공
             List<FileEntity> currentfilelist = fileService.readFileList();
