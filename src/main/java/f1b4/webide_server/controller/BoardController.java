@@ -1,7 +1,9 @@
 package f1b4.webide_server.controller;
 
 import f1b4.webide_server.dto.BoardDTO;
+import f1b4.webide_server.dto.CommentDTO;
 import f1b4.webide_server.service.BoardService;
+import f1b4.webide_server.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +21,7 @@ import java.util.Locale;
 @RequestMapping("/board")
 public class BoardController {
     private final BoardService boardService; // 의존성 주입
+    private final CommentService commentService;
 
     @GetMapping("/save")
     public String saveForm() {
@@ -49,6 +52,11 @@ public class BoardController {
          */
         boardService.updateHits(id);
         BoardDTO boardDTO = boardService.findById(id);
+        /*
+            댓글 목록 가져오기
+         */
+        List<CommentDTO> commentDTOList = commentService.findAll(id);
+        model.addAttribute("commentList", commentDTOList);
         model.addAttribute("board", boardDTO);
         model.addAttribute("page", pageable.getPageNumber());
 
@@ -76,17 +84,17 @@ public class BoardController {
         return "redirect:/board/";
     }
 
-    @GetMapping("/paging")
-    public String paging(@PageableDefault(page = 1) Pageable pageable, Model model) {
-        //pageable.getPageNumber();
-        Page<BoardDTO> boardList = boardService.paging(pageable);
-        int blockLimit = 3;
-        int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1; // 1 4 7 10 ~~
-        int endPage = ((startPage + blockLimit - 1) < boardList.getTotalPages()) ? startPage + blockLimit - 1 : boardList.getTotalPages();
-
-        model.addAttribute("boardList", boardList);
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
-        return "paging";
-    }
+//    @GetMapping("/paging")
+//    public String paging(@PageableDefault(page = 1) Pageable pageable, Model model) {
+//        //pageable.getPageNumber();
+//        Page<BoardDTO> boardList = boardService.paging(pageable);
+//        int blockLimit = 3;
+//        int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1; // 1 4 7 10 ~~
+//        int endPage = ((startPage + blockLimit - 1) < boardList.getTotalPages()) ? startPage + blockLimit - 1 : boardList.getTotalPages();
+//
+//        model.addAttribute("boardList", boardList);
+//        model.addAttribute("startPage", startPage);
+//        model.addAttribute("endPage", endPage);
+//        return "paging";
+//    }
 }

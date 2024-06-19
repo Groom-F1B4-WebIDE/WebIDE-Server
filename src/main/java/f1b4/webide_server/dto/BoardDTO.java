@@ -12,26 +12,22 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor // 기본 생성자
-@AllArgsConstructor // 모든 필드를 매개변수로 하는 생성자
+@NoArgsConstructor
+@AllArgsConstructor
 public class BoardDTO {
     private Long id;
-
     private String boardWriter;
     private String boardPass;
     private String boardTitle;
     private String boardContents;
-
-    private int boardHits; // 조회수
-
+    private int boardHits;
     private LocalDateTime boardCreatedTime;
     private LocalDateTime boardUpdatedTime;
 
-    // 파일 관련
-    private MultipartFile boardFile; // save.html --> Controller 파일 담는 용도
-    private String originalFileName; // 원본 파일 이름
-    private String storedFileName; // 서버 저장용 파일 이름
-    private int fileAttached; // 파일 첨부 여부(첨부 : 1, 미첨부 : 0)
+    private MultipartFile boardFile;
+    private String originalFileName;
+    private String storedFileName;
+    private Integer fileAttached; // 파일 첨부 여부(첨부 1, 미첨부 0)
 
     public BoardDTO(Long id, String boardWriter, String boardTitle, int boardHits, LocalDateTime boardCreatedTime) {
         this.id = id;
@@ -50,15 +46,15 @@ public class BoardDTO {
         boardDTO.setBoardContents(boardEntity.getBoardContents());
         boardDTO.setBoardHits(boardEntity.getBoardHits());
         boardDTO.setBoardCreatedTime(boardEntity.getCreatedTime());
-        boardDTO.setBoardUpdatedTime(boardEntity.getUpdateTime());
+        boardDTO.setBoardUpdatedTime(boardEntity.getUpdatedTime());
+        boardDTO.setFileAttached(boardEntity.getFileAttached()); // null 체크 필요
 
-        if(boardEntity.getFileAttached() == 0) {
-            boardDTO.setFileAttached(boardEntity.getFileAttached());
-        }
-        else {
-            boardDTO.setFileAttached(boardEntity.getFileAttached());
-            // 파일 이름을 가져가야 함
-            // originalFileName, storedFileName -> board_file_table(BoardFileEntity)
+        if (boardEntity.getFileAttached() != null && boardEntity.getFileAttached() == 1) {
+            // 파일 이름을 가져가야 함.
+            // orginalFileName, storedFileName : board_file_table(BoardFileEntity)
+            // join
+            // select * from board_table b, board_file_table bf where b.id=bf.board_id
+            // and where b.id=?
             boardDTO.setOriginalFileName(boardEntity.getBoardFileEntityList().get(0).getOriginalFileName());
             boardDTO.setStoredFileName(boardEntity.getBoardFileEntityList().get(0).getStoredFileName());
         }

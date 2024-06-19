@@ -12,15 +12,15 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "board_table")
-public class BoardEntity extends BaseEntity{
+public class BoardEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-   @Column(length = 20, nullable = false)
-   private String boardWriter;
+    @Column(length = 20, nullable = false)
+    private String boardWriter;
 
-   @Column
+    @Column
     private String boardPass;
 
     @Column
@@ -33,7 +33,7 @@ public class BoardEntity extends BaseEntity{
     private int boardHits;
 
     @Column
-    private Integer fileAttached; // 1 or 0
+    private Integer fileAttached; // null 가능
 
     @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<BoardFileEntity> boardFileEntityList = new ArrayList<>();
@@ -48,8 +48,7 @@ public class BoardEntity extends BaseEntity{
         boardEntity.setBoardTitle(boardDTO.getBoardTitle());
         boardEntity.setBoardContents(boardDTO.getBoardContents());
         boardEntity.setBoardHits(0);
-        boardEntity.setFileAttached(0); // 파일 첨부 x -> 파일 없음
-
+        boardEntity.setFileAttached(0); // 파일 없음.
         return boardEntity;
     }
 
@@ -61,7 +60,6 @@ public class BoardEntity extends BaseEntity{
         boardEntity.setBoardTitle(boardDTO.getBoardTitle());
         boardEntity.setBoardContents(boardDTO.getBoardContents());
         boardEntity.setBoardHits(boardDTO.getBoardHits());
-
         return boardEntity;
     }
 
@@ -72,9 +70,9 @@ public class BoardEntity extends BaseEntity{
         boardEntity.setBoardTitle(boardDTO.getBoardTitle());
         boardEntity.setBoardContents(boardDTO.getBoardContents());
         boardEntity.setBoardHits(0);
-        boardEntity.setFileAttached(1); // 파일 첨부 x -> 파일 없음
-
+        boardEntity.setFileAttached(1); // 파일 있음.
         return boardEntity;
     }
 }
+
 
