@@ -6,9 +6,9 @@ import org.springframework.stereotype.Controller;
 
 import javax.sql.DataSource;
 
-@Controller
+//@Controller
 public class DataSourceConfig{
-    @Bean
+//    @Bean
     public DataSource dataSource(){
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
