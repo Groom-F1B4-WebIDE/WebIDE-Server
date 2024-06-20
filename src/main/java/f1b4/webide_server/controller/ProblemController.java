@@ -80,6 +80,7 @@ public class ProblemController {
             missionResult.setResult(response.toString());
             missionResult.setResultTimeAt(LocalDateTime.now());
             resultRepository.save(missionResult);
+            log.info("{}", missionResult);
             return ResponseEntity.ok(response);
 
         } catch (IOException e) {
@@ -152,8 +153,8 @@ public class ProblemController {
 
     private String executeCode(String inputValues, String language, long timeoutMillis, long memoryBytes) throws IOException, InterruptedException {
         ProcessBuilder runProcessBuilder = switch (language) {
-            case "java" -> new ProcessBuilder("java", "UserCode");
-            case "python" -> new ProcessBuilder("python3", "UserCode.py");
+            case "java" -> new ProcessBuilder("/usr/bin/java", "UserCode");
+            case "python" -> new ProcessBuilder("/usr/bin/python3", "UserCode.py");
             case "cpp" -> new ProcessBuilder("./UserCode");
             default -> throw new IllegalArgumentException("지원되지 않는 언어입니다.");
         };
@@ -203,7 +204,7 @@ public class ProblemController {
     private ResponseEntity<String> compileJavaCode(String code) throws IOException, InterruptedException {
         Files.write(Paths.get("UserCode.java"), code.getBytes());
 
-        ProcessBuilder compileBuilder = new ProcessBuilder("javac", "UserCode.java");
+        ProcessBuilder compileBuilder = new ProcessBuilder("/usr/bin/javac", "UserCode.java");
         Process compileProcess = compileBuilder.start();
         compileProcess.waitFor();
 
@@ -223,7 +224,7 @@ public class ProblemController {
     private ResponseEntity<String> compileCppCode(String code) throws IOException, InterruptedException {
         Files.write(Paths.get("UserCode.cpp"), code.getBytes());
 
-        ProcessBuilder compileBuilder = new ProcessBuilder("g++", "-o", "UserCode", "UserCode.cpp");
+        ProcessBuilder compileBuilder = new ProcessBuilder("/usr/bin/g++", "-o", "UserCode", "UserCode.cpp");
         Process compileProcess = compileBuilder.start();
         compileProcess.waitFor();
 
