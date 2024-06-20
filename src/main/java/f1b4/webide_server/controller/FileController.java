@@ -84,7 +84,6 @@ public class FileController {
             String type = file.getFileType();
             resFileList.put(name, type);
         }
-        System.out.println("lists");
         return ResponseEntity.ok(resFileList);
     }
 
