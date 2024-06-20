@@ -1,5 +1,6 @@
 package f1b4.webide_server.controller;
 
+import f1b4.webide_server.dto.ReadFileReq;
 import f1b4.webide_server.entity.FileEntity;
 import f1b4.webide_server.dto.CreateFileReq;
 import f1b4.webide_server.dto.DeleteFileReq;
@@ -33,6 +34,7 @@ public class FileController {
         try {
             //Member member = memberRepository.findById(memberId)
             FileEntity newFile = fileService.creatFile(createFileReq.getFileName(), createFileReq.getFileType());
+            System.out.println();
             return ResponseEntity.ok(newFile);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((FileEntity) Map.of("error", "Invalid file type"));
@@ -49,8 +51,8 @@ public class FileController {
      * file list 불러올때 memberID req값으로 넣어줘야함
      * */
     @GetMapping("/read")
-    public ResponseEntity<String> readFile(@RequestBody UpdateFileReq updateFileReq) {
-        Optional<FileEntity> optionalFile = fileService.readFile(updateFileReq.getFileName());
+    public ResponseEntity<String> readFile(@RequestParam(value = "fileName") String fileName) {
+        Optional<FileEntity> optionalFile = fileService.readFile(fileName);
         if (optionalFile.isPresent()) {
             FileEntity file = optionalFile.get();
             String content = file.getContent();
@@ -82,6 +84,7 @@ public class FileController {
             String type = file.getFileType();
             resFileList.put(name, type);
         }
+        System.out.println("lists");
         return ResponseEntity.ok(resFileList);
     }
 
