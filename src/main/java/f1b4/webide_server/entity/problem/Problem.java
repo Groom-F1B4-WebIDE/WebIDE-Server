@@ -10,6 +10,7 @@ import java.util.List;
 @Getter @Setter
 public class Problem {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "PROBLEM_ID")
     private Long id;
 
     private String title;

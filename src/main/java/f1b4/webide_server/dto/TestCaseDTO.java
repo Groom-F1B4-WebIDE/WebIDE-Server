@@ -5,6 +5,7 @@ import lombok.Setter;
 
 @Getter @Setter
 public class TestCaseDTO {
+    private Long id;
     private String input;
     private String expectedOutput;
 }

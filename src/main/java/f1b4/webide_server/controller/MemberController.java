@@ -23,7 +23,6 @@ public class MemberController {
         if (memberService.existsByEmail(memberDTO.getMemberEmail())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 존재하는 이메일입니다.");
         }
-
         memberService.signup(memberDTO);
         return ResponseEntity.ok("회원가입 성공");
     }
