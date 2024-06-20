@@ -14,7 +14,7 @@ public class TestCase {
     private String expectedOutput;
 
     @ManyToOne
-    @JoinColumn(name = "problem_id")
+    @JoinColumn(name = "PROBLEM_ID")
     private Problem problem;
 
 //    public TestCase(String input, String expectedOutput) {
