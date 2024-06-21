@@ -45,6 +45,12 @@ public class ProblemController {
         return ResponseEntity.ok(problemResponseDTO);
     }
 
+    @GetMapping("/mission-results")
+    public ResponseEntity<List<MissionResult>> getMissionResults() {
+        List<MissionResult> results = resultRepository.findAll();
+        return ResponseEntity.ok(results);
+    }
+
     @PostMapping("/{id}/submit")
     public ResponseEntity<Map<String, Object>> submitSolution(@PathVariable Long id, @RequestBody CodeRequest codeRequest) {
         Problem problem = problemService.getProblemById(id);
