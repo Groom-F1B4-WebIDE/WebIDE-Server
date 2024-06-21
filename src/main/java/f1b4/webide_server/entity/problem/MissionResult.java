@@ -20,7 +20,7 @@ public class MissionResult {
     private String code;
 
     private boolean isCorrect;
-
+    @Column(name = "result", length = 1000)
     private String result;
 
     private LocalDateTime resultTimeAt;
